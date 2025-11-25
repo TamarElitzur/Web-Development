@@ -6,26 +6,37 @@ let txt1;
 let txt2;
 let btn;
 let lblRes;
+let op;
 
 function pageLoaded() {
     txt1 = document.getElementById('txt1')
     txt2 = document.getElementById('txt2')
+    op = document.getElementById('op')
     btn = document.getElementById('btnCalc')
-    btn.addEventListener('click',()=>{
-        calculate();
-    });
-    lblRes = document.getElementById('lblRes') 
+
+    btn.addEventListener('click', ()=>{ calculate(); });
+    lblRes = document.getElementById('lblRes')
 }
 
 function calculate() {
-    let txt1Text = txt1.value;
-    let num1 = parseInt(txt1Text);
-    
-    let txt2Text = txt2.value;
-    let num2 = parseInt(txt2Text);
+    const num1 = parseFloat(txt1.value);
+    const num2 = parseFloat(txt2.value);
+    const operation = op.value;
 
-    let res = num1 + num2;
+    let res;
+
+    switch(operation) {
+        case '+': res = num1 + num2; break;
+        case '-': res = num1 - num2; break;
+        case '*': res = num1 * num2; break;
+        case '/': 
+            res = num2 === 0 ? "Cannot divide by zero!" : (num1 / num2);
+            break;
+    }
     lblRes.innerText = res;
+
+    let logLine = `${num1} ${operation} ${num2} = ${res}`;
+    print(logLine, true);
 }
 
 const btn2 = document.getElementById("btn2")
@@ -33,13 +44,25 @@ btn2.addEventListener("click",()=>{
     print("btn2 clicked: "+ btn2.id + " | " + btn2.innerHTML)
 })
 
-function print(msg) {
+function print(msg, append = false) {
     // Get text area element reference
     const ta = document.getElementById("output");
     // Write msg to textArea text
-    if (ta) ta.value = msg;
-    // Write Log
-    else console.log(msg);
+    if (!ta) {
+        console.log(msg);
+        return;
+    }
+
+    if(append) {
+        // Add new line to log
+        ta.value += msg + "\n";
+    } else {
+        // Overloading
+        ta.value = msg + "\n";
+    }
+
+    ta.scrollTop = ta.scrollHeight;
+
 }
 
 function demoNative() {
@@ -61,7 +84,7 @@ function demoNative() {
 
     // Date
     const d = new Date();
-    out += "\n\n[Date] now = " + d.toISOString();
+    out += "\n\n[Date] now = " + d.toISOString().replace("T", " ").replace(/\.\d+Z$/, "");
 
     // Array
     const arr = [1, 2, 3, 4];
@@ -78,7 +101,7 @@ function demoNative() {
         return fn(a,b); 
     }
     const result = calc(10,20,(x,y)=>x+y);
-    out += "\n[Callback] calc(10,20, x+y ) = " + result;
+    out += "\n[Callback] calc(10,20,x+y) = " + result;
 
     print(out);
 }
