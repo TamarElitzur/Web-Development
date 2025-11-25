@@ -11,6 +11,10 @@ let op;
 function pageLoaded() {
     txt1 = document.getElementById('txt1')
     txt2 = document.getElementById('txt2')
+
+    txt1.addEventListener("input", () => validateInput(txt1));
+    txt2.addEventListener("input", () => validateInput(txt2));
+
     op = document.getElementById('op')
     btn = document.getElementById('btnCalc')
 
@@ -21,6 +25,15 @@ function pageLoaded() {
 function calculate() {
     const num1 = parseFloat(txt1.value);
     const num2 = parseFloat(txt2.value);
+
+    const isValid1 = validateInput(txt1);
+    const isValid2 = validateInput(txt2);
+
+    if (!isValid1 || !isValid2) {
+        lblRes.innerText = "Invalid input";
+        return;
+    }
+
     const operation = op.value;
 
     let res;
@@ -104,4 +117,20 @@ function demoNative() {
     out += "\n[Callback] calc(10,20,x+y) = " + result;
 
     print(out);
+}
+
+function validateInput(inputElement) {
+    const value = inputElement.value;
+
+    if (value.trim() === "" || isNaN(value)) {
+        // Invalid
+        inputElement.classList.remove("is-valid");
+        inputElement.classList.add("is-invalid");
+        return false;
+    } else {
+        // Valid
+        inputElement.classList.remove("is-invalid");
+        inputElement.classList.add("is-valid");
+        return true;
+    }
 }
